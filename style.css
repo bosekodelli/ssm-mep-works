@@ -947,6 +947,142 @@ body {
 .mx-auto { margin-left: auto; margin-right: auto; }
 .font-mono { font-family: var(--font-mono); }
 
+/* Top Header Info Bar */
+.top-header-bar {
+  background: rgba(4, 6, 10, 0.95);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  padding: 0.4rem 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1001;
+  position: relative;
+}
+
+.top-header-bar a {
+  color: var(--color-cyan);
+  text-decoration: none;
+}
+
+.top-header-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.top-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 230, 118, 0.1);
+  color: var(--color-green);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+/* Navbar Adjustment when Top Bar is present */
+.has-topbar .navbar {
+  top: 32px;
+}
+
+/* Trust Features Cards (Why Choose Us) */
+.trust-card {
+  background: rgba(14, 20, 32, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-card:hover {
+  border-color: var(--color-cyan);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.trust-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  background: rgba(0, 240, 255, 0.1);
+  color: var(--color-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+}
+
+/* Emergency Hotline Banner */
+.emergency-banner {
+  background: linear-gradient(135deg, rgba(14, 20, 32, 0.95), rgba(4, 6, 10, 0.98));
+  border: 1px solid var(--color-cyan);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.15);
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.emergency-phone-btn {
+  background: var(--color-cyan);
+  color: #000;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  padding: 0.9rem 1.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+  transition: all 0.25s ease;
+}
+
+.emergency-phone-btn:hover {
+  background: #33F3FF;
+  transform: scale(1.03);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+}
+
+/* Testimonials Cards */
+.testimonial-card {
+  background: rgba(14, 20, 32, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.75rem;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 1rem;
+}
+
+.author-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--color-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .grid-4-cols, .grid-3-cols, .grid-2-cols { grid-template-columns: repeat(1, 1fr); }
@@ -954,4 +1090,7 @@ body {
   .glowing-black-panel { top: auto; bottom: 80px; right: 20px; left: 20px; max-width: none; }
   .bim-hud-badge.top-left { left: 15px; top: 75px; }
   .scroll-timeline { display: none; }
+  .top-header-bar { display: none; }
+  .emergency-banner { flex-direction: column; text-center: center; text-align: center; }
 }
+
