@@ -214,8 +214,8 @@ function updateHotspotsAndUI(frameIdx) {
       mainCalloutPanel.querySelector('.panel-tag').innerText = '3D BIM SPATIAL COORDINATION';
       mainCalloutPanel.querySelector('.panel-title').innerHTML = 'SSV MEP WORKS <br><span class="text-cyan">ADVANCED BIM COORDINATION</span>';
     } else if (frameIdx < 120) {
-      mainCalloutPanel.querySelector('.panel-tag').innerText = 'HVAC AIR DISTRIBUTION';
-      mainCalloutPanel.querySelector('.panel-title').innerHTML = 'HIGH CAPACITY <br><span class="text-cyan">CYAN & MAGENTA DUCTS</span>';
+      mainCalloutPanel.querySelector('.panel-tag').innerText = 'MECHANICAL & PIPING DISCIPLINE';
+      mainCalloutPanel.querySelector('.panel-title').innerHTML = 'HIGH CAPACITY <br><span class="text-cyan">CYAN & MAGENTA PIPING</span>';
     } else if (frameIdx < 180) {
       mainCalloutPanel.querySelector('.panel-tag').innerText = 'ELECTRICAL CONTAINMENT';
       mainCalloutPanel.querySelector('.panel-title').innerHTML = 'POWER & DATA <br><span class="text-yellow">YELLOW CABLE TRAYS</span>';
