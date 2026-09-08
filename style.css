@@ -1049,7 +1049,27 @@ body {
 .border-t { border-top: 1px solid #E2E8F0; }
 .border-border { border-color: #E2E8F0; }
 
-/* Responsive */
+/* Responsive Image & Mobile Fit Rules */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.showcase-img-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.showcase-img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+/* Responsive Breakpoints */
 @media (max-width: 1024px) {
   .grid-4-cols, .grid-3-cols, .grid-2-cols { grid-template-columns: repeat(1, 1fr); }
   .mep-system-filters { display: none; }
@@ -1057,3 +1077,31 @@ body {
   .top-header-bar { display: none; }
   .emergency-banner { flex-direction: column; text-align: center; }
 }
+
+@media (max-width: 768px) {
+  .showcase-img {
+    height: auto;
+    max-height: 260px;
+    object-fit: contain;
+    background: #F1F5F9;
+  }
+  
+  .showcase-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .brand-logo-img {
+    height: 48px;
+    width: auto;
+  }
+
+  .preloader-logo-img {
+    max-width: 220px;
+    height: auto;
+  }
+
+  #bim-canvas {
+    object-fit: contain;
+  }
+}
+

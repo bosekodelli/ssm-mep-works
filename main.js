@@ -141,8 +141,12 @@ function renderCanvas() {
   const imgW = img.naturalWidth;
   const imgH = img.naturalHeight;
 
-  // Cover-fit calculation in physical pixels
-  const scale = Math.max(canvasW / imgW, canvasH / imgH);
+  // Responsive fit calculation (contain on mobile to show full 3D model, cover on desktop)
+  const isMobile = window.innerWidth <= 768;
+  const scale = isMobile 
+    ? Math.min(canvasW / imgW, canvasH / imgH)
+    : Math.max(canvasW / imgW, canvasH / imgH);
+
   const drawW = Math.round(imgW * scale);
   const drawH = Math.round(imgH * scale);
   const offsetX = Math.round((canvasW - drawW) / 2);
@@ -153,8 +157,9 @@ function renderCanvas() {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   
-  // Clear & Draw Frame
-  ctx.clearRect(0, 0, canvasW, canvasH);
+  // Clear & Fill Background, then Draw Frame
+  ctx.fillStyle = '#F8FAFC';
+  ctx.fillRect(0, 0, canvasW, canvasH);
   ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
   ctx.restore();
 
