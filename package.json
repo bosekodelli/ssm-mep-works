@@ -1,0 +1,14 @@
+{
+  "name": "ssv-mep-works",
+  "version": "1.0.0",
+  "description": "SSV MEP WORKS - Advanced 3D BIM & MEP Coordination Interactive Experience",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSV MEP WORKS | Advanced 3D BIM Coordination & MEP Systems Engineering</title>
+  <meta name="description" content="SSV MEP WORKS provides photorealistic 3D BIM coordination, clash-free MEP (Mechanical, Electrical, Plumbing) system routing, Navisworks analysis, and LOD 500 engineering models for high-rise architecture." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="bg-dark text-light overflow-x-hidden">
+
+  <!-- Preloader Screen -->
+  <div id="preloader" class="preloader-overlay">
+    <div class="preloader-content text-center">
+      <div class="brand-logo mb-4">
+        <img src="/logo.png" alt="SSV MEP WORKS Logo" class="preloader-logo-img mb-3" />
+        <div class="logo-text">SSV <span class="text-cyan">MEP WORKS</span></div>
+      </div>
+      <div class="loader-status text-cyan font-mono text-sm mb-2" id="preloader-status">
+        INITIALIZING 3D BIM COORDINATION MODEL...
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="preloader-bar"></div>
+      </div>
+      <div class="flex justify-between font-mono text-xs text-dim mt-2 max-w-md mx-auto">
+        <span id="preloader-count">0 / 240 FRAMES</span>
+        <span id="preloader-percent">0%</span>
+      </div>
+      <div class="text-xs text-dim mt-4 tracking-widest uppercase">
+        LOD 500 Spatial Coordination • Zero Field Clashes
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand">
+        <img src="/logo.png" alt="SSV MEP WORKS Logo" class="brand-logo-img" />
+        <div class="brand-badge">BIM 3D</div>
+        <span class="brand-title">SSV <span class="highlight">MEP WORKS</span></span>
+      </a>
+
+      <!-- MEP System Quick Filter HUD -->
+      <div class="mep-system-filters" id="system-filters">
+        <button class="filter-btn active" data-system="all">
+          <span class="filter-dot dot-all"></span> ALL SYSTEMS
+        </button>
+        <button class="filter-btn" data-system="hvac">
+          <span class="filter-dot dot-hvac"></span> HVAC (CYAN/MAGENTA)
+        </button>
+        <button class="filter-btn" data-system="elec">
+          <span class="filter-dot dot-elec"></span> ELEC (YELLOW)
+        </button>
+        <button class="filter-btn" data-system="plumb">
+          <span class="filter-dot dot-plumb"></span> PLUMBING (GREEN)
+        </button>
+      </div>
+
+      <div class="nav-actions">
+        <button class="btn-icon" id="audio-toggle" title="Toggle Tech Audio SFX">
+          <svg id="icon-sound" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+        <a href="#audit-modal" class="btn btn-cyan btn-sm" id="btn-open-audit">
+          <span class="pulse-indicator"></span> REQUEST BIM AUDIT
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Fullscreen Canvas Scroll Container -->
+  <section class="scroll-hero-wrapper" id="scroll-wrapper">
+    <div class="canvas-sticky-container">
+      
+      <!-- High Performance Render Canvas -->
+      <canvas id="bim-canvas"></canvas>
+
+      <!-- Grid Overlay & Technical Vignette -->
+      <div class="tech-grid-overlay"></div>
+
+      <!-- Callout Panel (Matches prompt specifications) -->
+      <div class="glowing-black-panel" id="main-callout-panel">
+        <div class="panel-tag font-mono">AUTODESK NAVISWORKS COORDINATED</div>
+        <h1 class="panel-title">SSV MEP WORKS: <br><span class="text-cyan">ADVANCED BIM COORDINATION</span></h1>
+        <p class="panel-desc">
+          Cutaway 3D x-ray visualization of high-rise MEP infrastructure. Precision spatial routing around structural steel I-beams & concrete floor slabs.
+        </p>
+        <div class="panel-meta">
+          <span class="badge-pill cyan">HVAC Air Ducts</span>
+          <span class="badge-pill yellow">Cable Trays</span>
+          <span class="badge-pill green">Plumbing Risers</span>
+        </div>
+      </div>
+
+      <!-- Interactive Frame-Anchored Hotspots -->
+      <div class="hotspots-layer" id="hotspots-layer">
+        <!-- HVAC Duct Hotspot -->
+        <div class="hotspot-pin" id="pin-hvac" style="top: 38%; left: 32%; display: none;">
+          <div class="pin-ring pin-cyan"></div>
+          <div class="pin-card">
+            <div class="pin-title text-cyan">MAIN HVAC SUPPLY DUCT</div>
+            <div class="pin-info">1200x600mm Galvanized Steel • 8,500 CFM • SMACNA Gauge 20</div>
+            <div class="pin-tag">Clash Clearance: +75mm</div>
+          </div>
+        </div>
+
+        <!-- Electrical Cable Tray Hotspot -->
+        <div class="hotspot-pin" id="pin-elec" style="top: 22%; left: 68%; display: none;">
+          <div class="pin-ring pin-yellow"></div>
+          <div class="pin-card">
+            <div class="pin-title text-yellow">PRIMARY POWER CABLE TRAY</div>
+            <div class="pin-info">600mm High-Density Ladder Tray • 3-Phase 4000A Busway Feeder</div>
+            <div class="pin-tag">IEC 61537 Certified</div>
+          </div>
+        </div>
+
+        <!-- Plumbing Riser Hotspot -->
+        <div class="hotspot-pin" id="pin-plumb" style="top: 58%; left: 78%; display: none;">
+          <div class="pin-ring pin-green"></div>
+          <div class="pin-card">
+            <div class="pin-title text-green">DOMESTIC WATER & DRAINAGE</div>
+            <div class="pin-info">DN100 Soundproof HDPE Riser • Cold/Hot Water Distribution</div>
+            <div class="pin-tag">Zero Penetration Clash</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vertical Scroll Progress Navigation Indicator -->
+      <div class="scroll-timeline font-mono text-xs" id="scroll-timeline">
+        <div class="timeline-step active" data-step="0">
+          <span class="step-num">01</span>
+          <span class="step-label">OVERVIEW</span>
+        </div>
+        <div class="timeline-step" data-step="1">
+          <span class="step-num">02</span>
+          <span class="step-label">HVAC DUCTS</span>
+        </div>
+        <div class="timeline-step" data-step="2">
+          <span class="step-num">03</span>
+          <span class="step-label">ELECTRICAL</span>
+        </div>
+        <div class="timeline-step" data-step="3">
+          <span class="step-num">04</span>
+          <span class="step-label">PLUMBING</span>
+        </div>
+        <div class="timeline-step" data-step="4">
+          <span class="step-num">05</span>
+          <span class="step-label">CLASH FREE</span>
+        </div>
+        <div class="timeline-track">
+          <div class="timeline-thumb" id="timeline-thumb"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Scroll Indicator Hint -->
+      <div class="scroll-prompt font-mono text-xs">
+        <span>SCROLL TO EXPLORE BIM SYSTEMS</span>
+        <div class="mouse-icon">
+          <div class="wheel font-mono"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Website Content Sections -->
+  <main class="main-content relative z-10">
+
+    <!-- Interactive System Deep Dive Section -->
+    <section class="section section-dark" id="systems-breakdown">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="sub-heading font-mono text-cyan">PRECISION MULTI-DISCIPLINARY BIM INTEGRATION</div>
+          <h2 class="section-title">Color-Coded Coordinated MEP Systems</h2>
+          <p class="section-desc mx-auto">
+            Our 3D BIM models prevent costly field collisions by pre-coordinating every duct, cable tray, pipe, and conduit with structural steel I-beams and concrete slabs.
+          </p>
+        </div>
+
+        <div class="grid grid-3-cols gap-6 mt-12">
+          <!-- Card 1: HVAC -->
+          <div class="card card-glow-cyan" data-system-card="hvac">
+            <div class="card-badge bg-cyan-glow text-cyan font-mono">CYAN & MAGENTA</div>
+            <div class="card-icon text-cyan">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20M17 7l-5 5-5-5M17 17l-5-5-5 5"/></svg>
+            </div>
+            <h3 class="card-title">HVAC Ductwork & Air Distribution</h3>
+            <p class="card-text">
+              Large supply and return ducts routed through beam penetrations with acoustic insulation, balancing dampers, and VAV box clearances.
+            </p>
+            <ul class="spec-list font-mono text-xs mt-4">
+              <li>• SMACNA High-Pressure Duct Spec</li>
+              <li>• Airflow Velocity & Pressure Loss Simulation</li>
+              <li>• Acoustic Lining & Thermal Insulation Modeling</li>
+            </ul>
+          </div>
+
+          <!-- Card 2: Electrical -->
+          <div class="card card-glow-yellow" data-system-card="elec">
+            <div class="card-badge bg-yellow-glow text-yellow font-mono">EXTENSIVE YELLOW</div>
+            <div class="card-icon text-yellow">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3 class="card-title">Electrical & Low-Voltage Trays</h3>
+            <p class="card-text">
+              Multi-tier power cable ladders, busway trunking, data containment, and emergency lighting conduits spatially isolated from wet piping.
+            </p>
+            <ul class="spec-list font-mono text-xs mt-4">
+              <li>• Busduct Trunking & Feeder Routing</li>
+              <li>• Cable Bend Radius Compliance</li>
+              <li>• Electromagnetic Interference (EMI) Spacing</li>
+            </ul>
+          </div>
+
+          <!-- Card 3: Plumbing -->
+          <div class="card card-glow-green" data-system-card="plumb">
+            <div class="card-badge bg-green-glow text-green font-mono">EMERALD GREEN</div>
+            <div class="card-icon text-green">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <h3 class="card-title">Plumbing & Hydronic Piping</h3>
+            <p class="card-text">
+              Domestic potable water mains, chilled water hydronics, greywater recycling, and sloped gravity sanitary drainage risers.
+            </p>
+            <ul class="spec-list font-mono text-xs mt-4">
+              <li>• Gravity Drainage Slope Slope Modeling (1:50)</li>
+              <li>• Expansion Joint & Anchor Locations</li>
+              <li>• Acoustic Sound-Insulated Riser Stacks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Clash Matrix & ROI Savings Calculator -->
+    <section class="section section-darker" id="clash-calculator">
+      <div class="container">
+        <div class="calculator-box">
+          <div class="grid grid-2-cols gap-12 align-center">
+            
+            <!-- Left Side: Controls -->
+            <div class="calc-controls">
+              <div class="sub-heading font-mono text-cyan">INTERACTIVE ROI ESTIMATOR</div>
+              <h2 class="title-md">Calculate Your Field Rework Savings</h2>
+              <p class="text-dim mb-6">
+                Discover how SSV MEP Works' zero-clash 3D BIM coordination protects project budgets and prevents schedule delays before on-site fabrication.
+              </p>
+
+              <div class="input-group mb-6">
+                <div class="flex justify-between font-mono text-sm mb-2">
+                  <label for="slider-sqft">PROJECT FLOOR AREA (SQ. FT)</label>
+                  <span class="text-cyan font-bold" id="val-sqft">250,000 SQ FT</span>
+                </div>
+                <input type="range" id="slider-sqft" min="20000" max="1000000" step="10000" value="250000" class="range-slider" />
+              </div>
+
+              <div class="input-group mb-6">
+                <div class="flex justify-between font-mono text-sm mb-2">
+                  <label for="slider-floors">BUILDING FLOORS</label>
+                  <span class="text-cyan font-bold" id="val-floors">35 FLOORS</span>
+                </div>
+                <input type="range" id="slider-floors" min="2" max="100" step="1" value="35" class="range-slider" />
+              </div>
+
+              <div class="input-group mb-6">
+                <div class="flex justify-between font-mono text-sm mb-2">
+                  <label for="select-complexity">MEP SYSTEM DENSITY & COMPLEXITY</label>
+                </div>
+                <select id="select-complexity" class="form-select font-mono">
+                  <option value="1.0">Standard Commercial Office (Medium Density)</option>
+                  <option value="1.4" selected>High-Rise Luxury Tower / Hotel (High Density)</option>
+                  <option value="1.8">Super-Specialty Hospital / Laboratory (Extreme Density)</option>
+                  <option value="2.2">Mission-Critical Data Center (Ultra Density)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Right Side: Live Results Dashboard -->
+            <div class="calc-results-card">
+              <div class="card-header border-b border-border pb-4 mb-6">
+                <span class="font-mono text-xs text-dim">COORDINATION ROI REPORT</span>
+                <div class="text-2xl font-bold text-white mt-1">SSV MEP SAVINGS IMPACT</div>
+              </div>
+
+              <div class="grid grid-2-cols gap-4">
+                <div class="stat-box">
+                  <span class="stat-label">CLASHES PREVENTED</span>
+                  <span class="stat-number text-cyan" id="res-clashes">438</span>
+                  <span class="stat-sub">In Navisworks 3D Model</span>
+                </div>
+
+                <div class="stat-box">
+                  <span class="stat-label">ESTIMATED REWORK SAVED</span>
+                  <span class="stat-number text-green" id="res-savings">$219,000</span>
+                  <span class="stat-sub">Direct Construction Dollars</span>
+                </div>
+
+                <div class="stat-box">
+                  <span class="stat-label">SCHEDULE DELAYS AVOIDED</span>
+                  <span class="stat-number text-yellow" id="res-weeks">7.5 WEEKS</span>
+                  <span class="stat-sub">On Critical Path</span>
+                </div>
+
+                <div class="stat-box">
+                  <span class="stat-label">RFI REDUCTION</span>
+                  <span class="stat-number text-magenta" id="res-rfis">-92%</span>
+                  <span class="stat-sub">Requests for Information</span>
+                </div>
+              </div>
+
+              <div class="cta-banner mt-6 p-4 rounded bg-cyan-glow-subtle flex justify-between items-center">
+                <div>
+                  <div class="font-bold text-sm text-white">Get a Fixed-Fee BIM Quote</div>
+                  <div class="text-xs text-dim">Upload your CAD/Revit files for instant review</div>
+                </div>
+                <a href="#audit-modal" class="btn btn-cyan btn-sm">REQUEST QUOTE</a>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Architectural BIM Showcase & Image Showcase -->
+    <section class="section section-dark" id="showcase-gallery">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="sub-heading font-mono text-cyan">HIGH-RESOLUTION RENDERINGS</div>
+          <h2 class="section-title">Photorealistic 3D BIM Engineering Showcase</h2>
+          <p class="section-desc mx-auto">
+            Inspect our high-precision cutaways demonstrating clash resolution across structural steel, concrete floor slabs, and intricate MEP risers.
+          </p>
+        </div>
+
+        <div class="grid grid-2-cols gap-8 mt-12">
+          
+          <!-- Image 1: Main High-Rise X-Ray Cutaway -->
+          <div class="showcase-card">
+            <div class="showcase-img-wrap">
+              <img src="/hero_bim.jpg" alt="SSV MEP Works 3D BIM Coordination High Rise Cutaway" class="showcase-img" />
+              <div class="img-badge">LOD 500 CO-ORDINATED</div>
+            </div>
+            <div class="showcase-content">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-mono text-xs text-cyan">METROPOLIS TWILIGHT HIGH-RISE TOWER</span>
+                <span class="badge-sm font-mono">100% CLASH-FREE</span>
+              </div>
+              <h3 class="text-xl font-bold text-white mb-2">Full Floor Cutaway MEP Coordination</h3>
+              <p class="text-dim text-sm">
+                Complete integration of cyan/magenta air distribution ducts, yellow electrical cable trays, red fire sprinklers, and green domestic water risers around heavy structural steel I-beams.
+              </p>
+            </div>
+          </div>
+
+          <!-- Image 2: Navisworks Clash Detection Software View -->
+          <div class="showcase-card">
+            <div class="showcase-img-wrap">
+              <img src="/clash_detection.jpg" alt="BIM Clash Detection Software Navisworks Analysis" class="showcase-img" />
+              <div class="img-badge bg-green text-black">NAVISWORKS SIMULATE 2024</div>
+            </div>
+            <div class="showcase-content">
+              <div class="flex justify-between items-center mb-2">
+                <span class="font-mono text-xs text-green">1,248 CLASHES RESOLVED</span>
+                <span class="badge-sm font-mono bg-green-glow text-green">0 ACTIVE HARD CLASHES</span>
+              </div>
+              <h3 class="text-xl font-bold text-white mb-2">Automated Hard & Soft Clash Detection</h3>
+              <p class="text-dim text-sm">
+                Software grid interface proving zero clearance tolerance issues between duct soffits, pipe insulation, and structural steel decking prior to physical site installation.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Suite & Workflow Matrix -->
+    <section class="section section-darker" id="services">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="sub-heading font-mono text-cyan">END-TO-END BIM SOLUTIONS</div>
+          <h2 class="section-title">Comprehensive MEP Coordination Services</h2>
+        </div>
+
+        <div class="grid grid-3-cols gap-6 mt-12">
+          
+          <div class="service-box">
+            <div class="service-number font-mono">01</div>
+            <h3 class="service-title">3D Multi-Disciplinary Coordination</h3>
+            <p class="service-text">
+              Merging Architectural, Structural, and MEP models in Autodesk Navisworks Manage to generate clash-free composite coordination models.
+            </p>
+          </div>
+
+          <div class="service-box">
+            <div class="service-number font-mono">02</div>
+            <h3 class="service-title">LOD 100 to LOD 500 Modeling</h3>
+            <p class="service-text">
+              Developing rich intelligent BIM models from conceptual design (LOD 100) to accurate fabrication and As-Built handover models (LOD 500).
+            </p>
+          </div>
+
+          <div class="service-box">
+            <div class="service-number font-mono">03</div>
+            <h3 class="service-title">Fabrication & Spool Sheets</h3>
+            <p class="service-text">
+              Extracting millimeter-accurate shop drawings, spool isometric sheets, hanger schedules, and duct cut-lists for offsite modular manufacturing.
+            </p>
+          </div>
+
+          <div class="service-box">
+            <div class="service-number font-mono">04</div>
+            <h3 class="service-title">Point Cloud LiDAR to 3D BIM</h3>
+            <p class="service-text">
+              Laser scanning existing high-rise structures and converting raw 3D point cloud scans into high-precision Revit models for MEP retrofits.
+            </p>
+          </div>
+
+          <div class="service-box">
+            <div class="service-number font-mono">05</div>
+            <h3 class="service-title">4D Construction Sequencing</h3>
+            <p class="service-text">
+              Linking MEP BIM elements to MS Project / Primavera schedules to animate installation phasing, crane lifts, and equipment delivery timelines.
+            </p>
+          </div>
+
+          <div class="service-box">
+            <div class="service-number font-mono">06</div>
+            <h3 class="service-title">COBie & Asset Data Tagging</h3>
+            <p class="service-text">
+              Embedding equipment serials, maintenance intervals, warranty links, and manufacturer specs directly into BIM elements for FM integration.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Standards & Software Ecosystem -->
+    <section class="section section-dark py-12 border-t border-b border-border">
+      <div class="container text-center">
+        <div class="font-mono text-xs text-dim uppercase tracking-widest mb-6">
+          COMPLIANT WITH GLOBAL BIM STANDARDS & LEADING SOFTWARE PLATFORMS
+        </div>
+        <div class="flex flex-wrap justify-center items-center gap-8 text-dim font-mono text-sm">
+          <span class="tag-pill">ISO 19650-1/2</span>
+          <span class="tag-pill">AUTODESK REVIT 2025</span>
+          <span class="tag-pill">NAVISWORKS MANAGE</span>
+          <span class="tag-pill">SOLIBRI MODEL CHECKER</span>
+          <span class="tag-pill">SMACNA HVAC DUCT CODES</span>
+          <span class="tag-pill">NFPA 13 SPRINKLER</span>
+          <span class="tag-pill">BIM 360 / ACC</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer section-darker pt-16 pb-8 border-t border-border">
+      <div class="container">
+        <div class="grid grid-4-cols gap-8 mb-12">
+          
+          <div>
+            <a href="#" class="brand mb-4 inline-block">
+              <img src="/logo.png" alt="SSV MEP WORKS Logo" class="brand-logo-img" />
+              <span class="brand-title">SSV <span class="highlight">MEP WORKS</span></span>
+            </a>
+            <p class="text-dim text-sm">
+              Advanced 3D BIM Spatial Coordination & MEP Engineering for High-Rise Architecture, Mission-Critical Data Centers, and Healthcare Facilities.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="footer-head font-mono">MEP DISCIPLINES</h4>
+            <ul class="footer-links text-sm">
+              <li><a href="#">HVAC Ducting & Air Systems</a></li>
+              <li><a href="#">Electrical Busway & Cable Trays</a></li>
+              <li><a href="#">Fire Protection & Sprinklers</a></li>
+              <li><a href="#">Plumbing & Drainage Risers</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-head font-mono">BIM SERVICES</h4>
+            <ul class="footer-links text-sm">
+              <li><a href="#">Navisworks Clash Resolution</a></li>
+              <li><a href="#">LOD 500 As-Built Modeling</a></li>
+              <li><a href="#">Laser Point Cloud Scan to BIM</a></li>
+              <li><a href="#">Fabrication Spool Drawings</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="footer-head font-mono">CONTACT HEADQUARTERS</h4>
+            <p class="text-dim text-sm mb-2">
+              SSV MEP Works Engineering Ltd.
+            </p>
+            <p class="text-dim text-sm mb-4">
+              Email: bim@ssvmepworks.com<br>
+              Direct: +1 (800) 555-MEP-BIM
+            </p>
+            <button class="btn btn-cyan btn-sm" id="btn-footer-audit">Request BIM Audit</button>
+          </div>
+
+        </div>
+
+        <div class="border-t border-border pt-6 flex justify-between items-center font-mono text-xs text-dim">
+          <span>&copy; 2026 SSV MEP WORKS. All Rights Reserved.</span>
+          <span>ADVANCED 3D BIM & CLASH COORDINATION PLATFORM</span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Request BIM Audit Modal -->
+  <div class="modal-overlay" id="audit-modal" style="display: none;">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close-btn">&times;</button>
+      
+      <div class="modal-header">
+        <span class="font-mono text-xs text-cyan">FAST-TRACK COORDINATION REVIEW</span>
+        <h3 class="text-2xl font-bold text-white mt-1">Request 3D BIM Clash Audit</h3>
+        <p class="text-dim text-sm">Upload your 2D CAD drawings or 3D Revit models for a complimentary 24-hour clash detection audit.</p>
+      </div>
+
+      <form id="audit-form" class="mt-6">
+        <div class="grid grid-2-cols gap-4">
+          <div class="form-group">
+            <label class="form-label font-mono">YOUR NAME</label>
+            <input type="text" class="form-input" placeholder="e.g. Robert Vance" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label font-mono">WORK EMAIL</label>
+            <input type="email" class="form-input" placeholder="name@company.com" required />
+          </div>
+        </div>
+
+        <div class="grid grid-2-cols gap-4 mt-4">
+          <div class="form-group">
+            <label class="form-label font-mono">PROJECT NAME & TYPE</label>
+            <input type="text" class="form-input" placeholder="e.g. Skyline Tower High-Rise" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label font-mono">TARGET LOD SPEC</label>
+            <select class="form-select font-mono">
+              <option>LOD 300 (Design Intent)</option>
+              <option>LOD 350 (Coordination)</option>
+              <option selected>LOD 400 (Fabrication)</option>
+              <option>LOD 500 (As-Built Handover)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mt-4">
+          <label class="form-label font-mono">UPLOAD MODEL OR CAD FILES (.RVT, .NWD, .IFC, .DWG)</label>
+          <div class="file-dropzone" id="file-dropzone">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="mx-auto text-cyan mb-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="text-sm font-bold text-white">Drag & Drop BIM Files or Click to Browse</div>
+            <div class="text-xs text-dim mt-1">Supports Revit, Navisworks, IFC, DWG, PDF up to 2GB</div>
+            <input type="file" id="file-input" class="hidden-file-input" multiple />
+          </div>
+        </div>
+
+        <div class="form-group mt-4">
+          <label class="form-label font-mono">SPECIAL COORDINATION NOTES</label>
+          <textarea class="form-input" rows="3" placeholder="Specify tight ceiling heights, structural beam constraints, or specific discipline conflicts..."></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" class="btn btn-secondary" id="btn-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-cyan">SUBMIT AUDIT REQUEST</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
